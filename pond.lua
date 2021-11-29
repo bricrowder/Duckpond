@@ -9,8 +9,9 @@ function pond.new(pondfile)
     p.water = {}
     p.bank = {}
     p.waves = {}
-    p.wateredge = {}
+    p.wateredge = {direction = -1}
     
+
     -- open, parse and assign pond file data
     for l in love.filesystem.lines("data/" .. pondfile .. ".csv") do
         -- parse data
@@ -66,9 +67,9 @@ function pond.new(pondfile)
             p.wateredge.x = tonumber(l:sub(s3+1,s4-1))
             
             p.wateredge.y = tonumber(l:sub(s4+1))
-
+            p.wateredge.oy = p.wateredge.y      -- save the starting y value for comparison later
             -- the amount of pixels the edge moves
-            p.wateredge.maxmovement = 20
+            p.wateredge.maxmovement = 5
         end
     end
 
@@ -76,14 +77,18 @@ function pond.new(pondfile)
 end
 
 function pond:update(dt)
-    -- update 
+    -- update
+    self.wateredge.y = self.wateredge.y + self.wateredge.speed * dt * self.wateredge.direction
+    if self.wateredge.y <= self.wateredge.oy - self.wateredge.maxmovement or self.wateredge.y >= self.wateredge.oy + self.wateredge.maxmovement then
+        self.wateredge.direction = self.wateredge.direction * -1
+    end
 end
 
 function pond:draw()
     love.graphics.draw(self.water.texture, self.water.x, self.water.y)
-    love.graphics.draw(self.wateredge.texture, self.wateredge.x, self.wateredge.y)
     love.graphics.draw(self.waves.texture, self.waves.x, self.waves.y)
     love.graphics.draw(self.bank.texture, self.bank.x, self.bank.y)
+    love.graphics.draw(self.wateredge.texture, self.wateredge.x, math.floor(self.wateredge.y))
 end
 
 
