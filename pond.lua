@@ -64,12 +64,13 @@ function pond.new(pondfile)
             p.wateredge.speed = tonumber(l:sub(s2+1,s3-1))
             
             local s4 = string.find(l,",",s3+1)
-            p.wateredge.x = tonumber(l:sub(s3+1,s4-1))
+            p.wateredge.maxmovement = tonumber(l:sub(s3+1,s4-1))
+
+            local s5 = string.find(l,",",s4+1)
+            p.wateredge.x = tonumber(l:sub(s4+1,s5-1))
             
-            p.wateredge.y = tonumber(l:sub(s4+1))
+            p.wateredge.y = tonumber(l:sub(s5+1))
             p.wateredge.oy = p.wateredge.y      -- save the starting y value for comparison later
-            -- the amount of pixels the edge moves
-            p.wateredge.maxmovement = 5
         end
     end
 
@@ -85,10 +86,10 @@ function pond:update(dt)
 end
 
 function pond:draw()
-    love.graphics.draw(self.water.texture, self.water.x, self.water.y)
-    love.graphics.draw(self.waves.texture, self.waves.x, self.waves.y)
     love.graphics.draw(self.bank.texture, self.bank.x, self.bank.y)
     love.graphics.draw(self.wateredge.texture, self.wateredge.x, math.floor(self.wateredge.y))
+    love.graphics.draw(self.water.texture, self.water.x, self.water.y)
+    love.graphics.draw(self.waves.texture, self.waves.x, self.waves.y)
 end
 
 

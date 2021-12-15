@@ -1,3 +1,5 @@
+local pondclass = require "pond"
+
 local menu = {}
 menu.__index = menu
 
@@ -63,7 +65,10 @@ function menu:keypressed(key)
     -- select menuitem 
     elseif key == "space" then
         if self.menuindex == 1 then
-            -- start a new game
+            print "got here!"
+            -- create a new game and set the mode to game - calls it from main.lua function so that it is created under that namespace, not the menu
+            createGame()
+
         elseif self.menuindex == 2 then
             -- quit
             love.event.quit()
@@ -76,7 +81,7 @@ function menu:mousepressed(x, y, button)
         local v = self.menubuttons[self.menuindex]
         if x >= v.x and x <= v.x+v.w and y >= v.y and y <= v.y+v.h then
             if self.menuindex == 1 then
-                -- start game
+                createGame()
             elseif self.menuindex == 2 then
                 love.event.quit()
             end
