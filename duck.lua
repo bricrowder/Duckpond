@@ -37,7 +37,7 @@ function duck.new()
     d.chaseradius = 300     -- pixel length basically
     -- check again how to use pythag for the check, did it a ton in that flying / planet game
 
-    -- action animation stuff
+    -- initialize animation variables and and frames
     d.animtimer = 0
     d.eat = {
         texture = {

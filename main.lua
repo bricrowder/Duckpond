@@ -12,13 +12,24 @@ hiscore = nil            -- the hiscore object
 
 -- load menu and hiscore
 function love.load()
-    print "starting!"
+    
+    -- setup randomizer
+    local seed = os.time()
+    math.randomseed(seed)
+    -- macos used to need a few pops or it will not actually be random... not sure why
+
+
+    
+    print("starting!")
+    print(seed)
+
     -- set the mode to start in the menu
     mode = "menu"
     backgroundcolour = {0.3, 0.3, 1.0, 1.0}
     menu = menuclass.new()
     hiscore = hiscoreclass.new()
     -- createGame() is called from the menu object
+
 end
 
 function love.keypressed(key)
