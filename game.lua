@@ -2,6 +2,7 @@
 local playerclass = require "player"
 local duckclass = require "duck"
 local foodspawnerclass = require "foodspawner"
+local foodclass = require "food"
 local pondclass = require "pond"
 
 local game = {}
@@ -21,9 +22,13 @@ function game.new()
     end
 
     g.foodspawners = {
-        
+        foodspawnerclass.new(100, 75),
+        foodspawnerclass.new(400, 50),
+        foodspawnerclass.new(700, 65)
     }
     
+    g.food = {}
+
     g.paused = false
 
     return g
@@ -39,29 +44,40 @@ end
 function game:update(dt)
     self.pond:update(dt)
 
+    local checkdistance = 100       -- duck collision check distance
     for i, v in ipairs(self.ducks) do
+        v:update(dt)
+
+        -- for j, w in ipairs(self.ducks) do
+        --     -- for duck collision check
+        -- end
+
+        -- head toward closest food
+        -- for j, w in ipairs() do
+            
+        -- end
+                
+
+    end
+
+    -- update food spawners / food
+    for i, v in ipairs(self.foodspawners) do
         v:update(dt)
     end
 
-    -- duck on duck collision, in pixels
-    local checkdistance = 100
-    for i, v in ipairs(self.ducks) do
-        for j, w in ipairs(self.ducks) do
-            -- only if this isn't already the duck being checked
-            -- if i not j then
-            --     -- set adjust flag accordingly
-            --     -- check my other game!
-            -- end
-        end
-    end
 end
 
 function game:draw()
     if not self.paused then
         self.pond:draw()
 
+        for i, v in ipairs(self.foodspawners) do
+            v:draw()
+        end
+
         for i, v in ipairs(self.ducks) do
             v:draw()
+            love.graphics.print(i, v.x, v.y)
         end
     else
         -- show pause menu

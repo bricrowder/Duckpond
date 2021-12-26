@@ -131,10 +131,7 @@ function duck:update(dt)
             self.y = self.bounds.y + self.bounds.h
             self:changeangle()
         end
-        
-        -- adjust if there are any other ducks in your way
-
-
+              
         self.timer = self.timer + dt
         if self.timer >= self.movetime then
             self.timer = 0
