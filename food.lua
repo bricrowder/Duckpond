@@ -10,7 +10,7 @@ function food.new(x, y, a)
     f.angle = a
 
     f.speed = 60        -- pixels per second
-    f.throwtime = 3        -- pixels
+    f.throwtime = math.random(300,400) / 100        -- time
     f.currentthrowtime = 0   -- pixels
     f.lifetime = 15         -- life in second until it disappears, is also updated by "feeding"
 

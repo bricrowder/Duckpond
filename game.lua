@@ -22,9 +22,9 @@ function game.new()
     end
 
     g.foodspawners = {
-        foodspawnerclass.new(100, 75),
-        foodspawnerclass.new(400, 50),
-        foodspawnerclass.new(700, 65)
+        foodspawnerclass.new(100, 75, math.pi/2, math.pi/4),
+        foodspawnerclass.new(400, 50, math.pi/4*3, math.pi/4),
+        foodspawnerclass.new(700, 65, math.pi/4*3, math.pi/2)
     }
     
     g.food = {}

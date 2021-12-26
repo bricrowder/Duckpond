@@ -3,15 +3,17 @@ local foodclass = require "food"
 local foodspawner = {}
 foodspawner.__index = foodspawner
 
-function foodspawner.new(x, y)
+function foodspawner.new(x, y, amin, amax)
     local f = {}
     setmetatable (f, foodspawner)
 
     f.x = x
     f.y = y
     f.angle = math.pi/2     -- direction that the food is thrown, initialized to straight down
+    f.throwanglemin = amin
+    f.throwanglemax = amax
 
-    f.timebetweenthrows = 3
+    f.timebetweenthrows = math.random(500,1000) / 100
     f.throwtimer = 0
 
     f.food = {}
@@ -26,7 +28,7 @@ function foodspawner:update(dt)
     end
     
     -- find food to get rid of
-    local todestory = {}
+    local todestroy = {}
     for i, v in ipairs(self.food) do
         if v.todestroy then
             table.insert(todestroy, i)
@@ -46,8 +48,16 @@ function foodspawner:update(dt)
         -- reset, more exact then just 0 reset
         self.throwtimer = self.throwtimer - self.timebetweenthrows
 
+        local amin = self.throwanglemin*100
+        local amax = self.throwanglemax*100
+        self.angle = math.random(amin, amax) / 100
+
         -- spawn a new food!
         table.insert(self.food, foodclass.new(self.x, self.y, self.angle))
+
+        -- new time to throw value
+        self.timebetweenthrows = math.random(500,1000) / 100
+
     end
 end
 
