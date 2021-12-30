@@ -3,7 +3,7 @@ local foodclass = require "food"
 local foodspawner = {}
 foodspawner.__index = foodspawner
 
-function foodspawner.new(x, y, amin, amax)
+function foodspawner.new(x, y, amin, amax, uid)
     local f = {}
     setmetatable (f, foodspawner)
 
@@ -13,10 +13,12 @@ function foodspawner.new(x, y, amin, amax)
     f.throwanglemin = amin
     f.throwanglemax = amax
 
-    f.timebetweenthrows = math.random(500,1000) / 100
+    f.timebetweenthrows = math.random(200,1000) / 100
     f.throwtimer = 0
 
     f.food = {}
+
+    f.uid = uid
 
     return f
 end
@@ -53,7 +55,7 @@ function foodspawner:update(dt)
         self.angle = math.random(amin, amax) / 100
 
         -- spawn a new food!
-        table.insert(self.food, foodclass.new(self.x, self.y, self.angle))
+        table.insert(self.food, foodclass.new(self.x, self.y, self.angle, self.uid))
 
         -- new time to throw value
         self.timebetweenthrows = math.random(500,1000) / 100

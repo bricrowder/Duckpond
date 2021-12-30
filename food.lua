@@ -1,7 +1,7 @@
 local food = {}
 food.__index = food
 
-function food.new(x, y, a)
+function food.new(x, y, a, fsuid)
     local f = {}
     setmetatable (f, food)
 
@@ -15,6 +15,9 @@ function food.new(x, y, a)
     f.lifetime = 15         -- life in second until it disappears, is also updated by "feeding"
 
     f.todestroy = false
+    f.beingeaten = false
+
+    f.uid = fsuid .. os.time()
 
     return f
 end
