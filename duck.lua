@@ -33,10 +33,11 @@ function duck.new()
     d.timerturncheck = 0        -- in seconds
     d.cx = 0
     d.cy = 0
-    d.chasing = false       -- if duck is chasing a target/food
-    d.chaseradius = 300     -- pixel length basically
-    -- check again how to use pythag for the check, did it a ton in that flying / planet game
 
+    d.fooduid = nil         -- the uid of the food that the duck is currently chasing/eating
+
+
+    
     -- initialize animation variables and and frames
     d.animtimer = 0
     d.eat = {
@@ -59,11 +60,15 @@ function duck.new()
 
 end
 
-function duck:update(dt)
+function duck:update(dt, fs)
 
     -- add a chase mode here
 
-    if self.mode == "move" then
+    if self.mode == "chase" then
+        self.x = self.x + self.speed * dt * math.cos(self.angle)
+        self.y = self.y + self.speed * dt * math.sin(self.angle)
+        
+    elseif self.mode == "move" then
 
         -- move the duck
         self.x = self.x + self.speed * dt * math.cos(self.angle)
@@ -144,13 +149,18 @@ function duck:update(dt)
         if self.timer >= self.actiontime then
             self.timer = 0
             
-            local action = math.random(1,2)
+            for i, v in ipairs(fs) do
+                for j, w in ipairs(v.food) do
 
+                end
+            end
+
+            local action = math.random(1,3)
+            
             if action == 1 then
                 self.mode = "move"
             elseif action == 2 then
-                self.mode = "eat"
-                self.animtimer = 0
+                self.mode = "pause"
             elseif action == 3 then
                 self.mode = "clean"
                 self.animtimer = 0
@@ -158,7 +168,7 @@ function duck:update(dt)
         end
 
     elseif self.mode == "eat" then
-        -- update the frame #
+        -- -- update the frame #
         self.animtimer = self.animtimer + dt
         if self.animtimer >= self.eat.framespeed then
             self.animtimer = self.animtimer - self.eat.framespeed
@@ -168,12 +178,13 @@ function duck:update(dt)
             end
         end
 
-        -- update the action time
-        self.timer = self.timer + dt
-        if self.timer >= self.eattime then
-            self.timer = 0
-            self.mode = "pause"
-        end
+        -- -- update the action time
+        -- self.timer = self.timer + dt
+        -- if self.timer >= self.eattime then
+        --     self.timer = 0
+        --     self.mode = "pause"
+        -- end
+
     elseif self.mode == "clean" then
         -- update the frame #
         self.animtimer = self.animtimer + dt
