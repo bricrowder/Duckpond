@@ -17,7 +17,7 @@ function food.new(x, y, a, fsuid)
     f.todestroy = false
     f.beingeaten = false
 
-    f.uid = fsuid .. os.time()
+    f.fooduid = fsuid .. os.time()
 
     return f
 end

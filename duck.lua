@@ -35,9 +35,8 @@ function duck.new()
     d.cy = 0
 
     d.fooduid = nil         -- the uid of the food that the duck is currently chasing/eating
+    d.fs = nil              -- spawner index, shouldn't change over the game so... 
 
-
-    
     -- initialize animation variables and and frames
     d.animtimer = 0
     d.eat = {
@@ -62,7 +61,46 @@ end
 
 function duck:update(dt, fs)
 
-    -- add a chase mode here
+    -- if you don't have a food then pick one
+    if not(self.fooduid) then
+        local s = math.random(#fs)
+        local f = 0
+        if #fs[s].food > 0 then
+            f = math.random(#fs[s].food)
+            self.fooduid = fs[s].food[f].fooduid
+            self.fs = s
+            self.mode = "chase"
+            self.angle = math.atan2(fs[s].food[f].y - self.y, fs[s].food[f].x - self.x)            
+        end
+    else
+        -- if you do have a food already, make sure it is still there
+        local found = false
+        for i, v in ipairs(fs[self.fs].food) do
+            if v.fooduid == self.fooduid then
+                found = true
+                local dx = math.abs(self.x - v.x)
+                local dy = math.abs(self.y - v.y)
+                local d = math.sqrt(dx*dx + dy*dy)
+                self.angle = math.atan2(v.y - self.y, v.x - self.x)            
+
+                -- if the duck is close enough to eat... stop and set to eat, remove some food life, we are eating so stop checking
+                if d < self.texture:getWidth()/2 then
+                    self.mode = "eat"
+                    v.beingeaten = true
+                    v.lifetime = v.lifetime - dt
+                    break
+                else
+                    self.mode = "chase"
+                    v.beingeaten = false
+                end
+            end
+        end
+        if not(found) then
+            self.fooduid = nil
+            self.fs = nil
+            self.mode = "pause"
+        end
+    end
 
     if self.mode == "chase" then
         self.x = self.x + self.speed * dt * math.cos(self.angle)
@@ -149,12 +187,6 @@ function duck:update(dt, fs)
         if self.timer >= self.actiontime then
             self.timer = 0
             
-            for i, v in ipairs(fs) do
-                for j, w in ipairs(v.food) do
-
-                end
-            end
-
             local action = math.random(1,3)
             
             if action == 1 then
