@@ -11,6 +11,12 @@ function pond.new(pondfile)
     p.waves = {}
     p.wateredge = {direction = -1}
     
+    p.shader = love.graphics.newShader("shaders/water.glsl")
+
+    p.canvas = love.graphics.newCanvas(800,419)
+    p.shader:send("height", 180)
+
+    p.timer = 0
 
     -- open, parse and assign pond file data
     for l in love.filesystem.lines("data/" .. pondfile .. ".csv") do
@@ -83,12 +89,27 @@ function pond:update(dt)
     if self.wateredge.y <= self.wateredge.oy - self.wateredge.maxmovement or self.wateredge.y >= self.wateredge.oy + self.wateredge.maxmovement then
         self.wateredge.direction = self.wateredge.direction * -1
     end
+
+    self.timer = self.timer + dt
+    self.shader:send("time", self.timer)
+
 end
 
 function pond:draw()
     love.graphics.draw(self.bank.texture, self.bank.x, self.bank.y)
+    love.graphics.setCanvas(self.canvas)
+    love.graphics.clear(0.05,0.05,0.1,1.0)
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.draw(self.bank.texture, 0, self.bank.texture:getHeight(),0,1,-1)
+    love.graphics.setColor(1,1,1,1)
+    love.graphics.setCanvas()
+    love.graphics.setShader(self.shader)
+    love.graphics.draw(self.canvas, 0, 181)
+    love.graphics.setShader()
+    
+
     -- love.graphics.draw(self.wateredge.texture, self.wateredge.x, math.floor(self.wateredge.y))
-    love.graphics.draw(self.water.texture, self.water.x, self.water.y)
+    -- love.graphics.draw(self.water.texture, self.water.x, self.water.y)
     -- love.graphics.draw(self.waves.texture, self.waves.x, self.waves.y)
 end
 
