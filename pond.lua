@@ -87,9 +87,9 @@ end
 
 function pond:draw()
     love.graphics.draw(self.bank.texture, self.bank.x, self.bank.y)
-    love.graphics.draw(self.wateredge.texture, self.wateredge.x, math.floor(self.wateredge.y))
+    -- love.graphics.draw(self.wateredge.texture, self.wateredge.x, math.floor(self.wateredge.y))
     love.graphics.draw(self.water.texture, self.water.x, self.water.y)
-    love.graphics.draw(self.waves.texture, self.waves.x, self.waves.y)
+    -- love.graphics.draw(self.waves.texture, self.waves.x, self.waves.y)
 end
 
 

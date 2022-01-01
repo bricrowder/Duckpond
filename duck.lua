@@ -56,7 +56,6 @@ function duck.new()
         frame = 1
     }
     return d
-
 end
 
 function duck:update(dt, fs)
@@ -86,12 +85,12 @@ function duck:update(dt, fs)
                 -- if the duck is close enough to eat... stop and set to eat, remove some food life, we are eating so stop checking
                 if d < self.texture:getWidth()/2 then
                     self.mode = "eat"
-                    v.beingeaten = true
+                    -- v.beingeaten = true
                     v.lifetime = v.lifetime - dt
                     break
                 else
                     self.mode = "chase"
-                    v.beingeaten = false
+                    -- v.beingeaten = false
                 end
             end
         end
@@ -263,7 +262,7 @@ function duck:changeangle()
 end
 
 function duck:setDir()
-    if self.angle >= math.pi/2 and self.angle <= math.pi*3/2 then
+    if math.abs(self.angle) >= math.pi/2 and self.angle <= math.pi*3/2 then
         self.flip = -1
     else
         self.flip = 1
