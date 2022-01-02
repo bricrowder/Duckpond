@@ -13,8 +13,7 @@ function pond.new(pondfile)
     
     p.shader = love.graphics.newShader("shaders/water.glsl")
 
-    p.canvas = love.graphics.newCanvas(800,419)
-    p.shader:send("height", 180)
+    p.shader:send("starta", 0.75)
 
     p.timer = 0
 
@@ -96,18 +95,16 @@ function pond:update(dt)
 end
 
 function pond:draw()
-    love.graphics.draw(self.bank.texture, self.bank.x, self.bank.y)
-    love.graphics.setCanvas(self.canvas)
     love.graphics.clear(0.05,0.05,0.1,1.0)
-    love.graphics.setColor(1,1,1,1)
-    love.graphics.draw(self.bank.texture, 0, self.bank.texture:getHeight(),0,1,-1)
-    love.graphics.setColor(1,1,1,1)
-    love.graphics.setCanvas()
+    love.graphics.draw(self.bank.texture, self.bank.x, self.bank.y)
+    -- love.graphics.setCanvas(self.canvas)
+    love.graphics.setColor(1,1,1,0.125)
     love.graphics.setShader(self.shader)
-    love.graphics.draw(self.canvas, 0, 181)
+    love.graphics.draw(self.bank.texture, 0, self.bank.texture:getHeight()*2,0,1,-1)
     love.graphics.setShader()
-    
-
+    love.graphics.setColor(1,1,1,1)
+    -- love.graphics.setCanvas()
+    -- love.graphics.draw(self.canvas, 0, 181)
     -- love.graphics.draw(self.wateredge.texture, self.wateredge.x, math.floor(self.wateredge.y))
     -- love.graphics.draw(self.water.texture, self.water.x, self.water.y)
     -- love.graphics.draw(self.waves.texture, self.waves.x, self.waves.y)
