@@ -57,7 +57,9 @@ end
 
 function game:draw()
     if not self.paused then
-        self.pond:draw()
+        if #self.ducks > 0 then
+            self.pond:draw(self.ducks)
+        end
 
         for i, v in ipairs(self.foodspawners) do
             v:draw()
@@ -67,9 +69,6 @@ function game:draw()
             v:draw()
             love.graphics.print(i, v.x, v.y)
         end
-
-        love.graphics.print(self.ducks[1].mode, 10, 10)
-        love.graphics.print(self.ducks[1].angle, 10, 25)
     else
         -- show pause menu
         love.graphics.setLineWidth(4)
