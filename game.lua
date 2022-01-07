@@ -72,9 +72,9 @@ function game:draw()
 
         for i, v in ipairs(self.ducks) do
             v:draw()
-            love.graphics.print(i, v.x, v.y)
-            love.graphics.print(#v.ripples, v.x, v.y+15)
-            love.graphics.print(v.angle, v.x, v.y+30)
+            -- love.graphics.print(i, v.x, v.y)
+            -- love.graphics.print(#v.ripples, v.x, v.y+15)
+            -- love.graphics.print(v.angle, v.x, v.y+30)
         end
     else
         -- show pause menu
