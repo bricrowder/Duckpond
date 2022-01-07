@@ -20,6 +20,8 @@ function foodspawner.new(x, y, amin, amax, uid)
 
     f.uid = uid
 
+    f.active = true
+
     return f
 end
 
@@ -44,22 +46,24 @@ function foodspawner:update(dt)
         end
     end
     
-    -- throw food
-    self.throwtimer = self.throwtimer + dt
-    if self.throwtimer >= self.timebetweenthrows then
-        -- reset, more exact then just 0 reset
-        self.throwtimer = self.throwtimer - self.timebetweenthrows
+    if self.active then
+        -- throw food
+        self.throwtimer = self.throwtimer + dt
+        if self.throwtimer >= self.timebetweenthrows then
+            -- reset, more exact then just 0 reset
+            self.throwtimer = self.throwtimer - self.timebetweenthrows
 
-        local amin = self.throwanglemin*100
-        local amax = self.throwanglemax*100
-        self.angle = math.random(amin, amax) / 100
+            local amin = self.throwanglemin*100
+            local amax = self.throwanglemax*100
+            self.angle = math.random(amin, amax) / 100
 
-        -- spawn a new food!
-        table.insert(self.food, foodclass.new(self.x, self.y, self.angle, self.uid))
+            -- spawn a new food!
+            table.insert(self.food, foodclass.new(self.x, self.y, self.angle, self.uid))
 
-        -- new time to throw value
-        self.timebetweenthrows = math.random(500,1000) / 100
+            -- new time to throw value
+            self.timebetweenthrows = math.random(500,1000) / 100
 
+        end
     end
 end
 

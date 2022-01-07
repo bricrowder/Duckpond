@@ -9,13 +9,14 @@ function duck.new()
     local duckfile = "assets/duck" .. ducknumber .. ".png"
     local duckeatfiles = {"assets/duck" .. ducknumber .. "eat1.png", "assets/duck" .. ducknumber .. "eat2.png"}
     local duckcleanfiles = {"assets/duck" .. ducknumber .. "clean1.png", "assets/duck" .. ducknumber .. "clean2.png"}
-
+    
     d.x = math.random(50, 750)
     d.y = math.random(150, 550)
     d.angle = math.random(1,628) / 100
     d.speed = math.random(30,50)
     d.flip = 1          -- x scale, use -1 to flip sprite
     d.texture = love.graphics.newImage(duckfile)
+    d.rippletexture = love.graphics.newImage("assets/ripple.png")
     d.mode = "pause"     -- move, turn, pause, eat, clean
     d.actiontime = math.random(6,8)   -- in seconds, time to pick an action
     d.timer = 0         -- the counter for the actiontimer and the actions, i can reuse it
@@ -36,6 +37,10 @@ function duck.new()
 
     d.fooduid = nil         -- the uid of the food that the duck is currently chasing/eating
     d.fs = nil              -- spawner index, shouldn't change over the game so... 
+
+    d.ripples = {}          -- the ripples the duck makes when moving
+    d.rippletimer = 0       -- time between ripples
+    d.ripplertimermax = 1   -- time between ripples
 
     -- initialize animation variables and and frames
     d.animtimer = 0
@@ -104,7 +109,11 @@ function duck:update(dt, fs)
     if self.mode == "chase" then
         self.x = self.x + self.speed * dt * math.cos(self.angle)
         self.y = self.y + self.speed * dt * math.sin(self.angle)
-        
+        self.rippletimer = self.rippletimer + dt
+        if self.rippletimer >= self.ripplertimermax then
+            self.rippletimer = self.rippletimer - self.ripplertimermax
+            self:addRipple()
+        end
     elseif self.mode == "move" then
 
         -- move the duck
@@ -177,7 +186,14 @@ function duck:update(dt, fs)
         self.timer = self.timer + dt
         if self.timer >= self.movetime then
             self.timer = 0
+            self.rippletimer = 0            
             self.mode = "pause"
+        end
+
+        self.rippletimer = self.rippletimer + dt
+        if self.rippletimer >= self.ripplertimermax then
+            self.rippletimer = self.rippletimer - self.ripplertimermax
+            self:addRipple()
         end
 
     elseif self.mode == "pause" then
@@ -209,13 +225,6 @@ function duck:update(dt, fs)
             end
         end
 
-        -- -- update the action time
-        -- self.timer = self.timer + dt
-        -- if self.timer >= self.eattime then
-        --     self.timer = 0
-        --     self.mode = "pause"
-        -- end
-
     elseif self.mode == "clean" then
         -- update the frame #
         self.animtimer = self.animtimer + dt
@@ -235,7 +244,23 @@ function duck:update(dt, fs)
         end
     end
     self:setDir()
-    
+
+    local todelete = {}
+    for i, v in ipairs(self.ripples) do
+        if v.alpha > 0 then
+            v.size = v.size + dt * v.ripplegrowthrate
+            v.alpha = v.alpha - dt * v.alphalossrate
+        else
+            table.insert(todelete, i)
+        end
+    end
+
+    if #todelete > 0 then
+        for i=#todelete, 1, -1 do
+            table.remove(self.ripples, todelete[i])
+        end
+    end
+
     -- reset adjust flag
     self.adjust = false
 end
@@ -255,6 +280,14 @@ function duck:draw()
     -- love.graphics.print(self.mode, 10, 55)
 end
 
+function duck:drawRipples(yoffset)
+    for i, v in ipairs(self.ripples) do
+        love.graphics.setColor(1,1,1,v.alpha)
+        love.graphics.draw(self.rippletexture, v.x, v.y-yoffset+self.rippletexture:getHeight()/2, 0, v.size, v.size, self.rippletexture:getWidth()/2, self.rippletexture:getHeight()/2)
+    end
+    love.graphics.setColor(1,1,1,1)
+end
+
 function duck:changeangle()
     local a = self.angle + math.pi      -- do a 180
     local d = math.random(-157,157) / 100       -- then randomize up to 90 degrees on either side - 1.57 is pi/2, or 90 degrees
@@ -267,6 +300,19 @@ function duck:setDir()
     else
         self.flip = 1
     end
+end
+
+function duck:addRipple()
+    local ripple = {}
+    ripple.x = self.x
+    ripple.y = self.y
+    ripple.a = self.angle
+    ripple.alpha = 0.75      -- init to half
+    ripple.size = 1.0       -- scale in pixels
+    ripple.alphalossrate = 0.1     -- per second
+    ripple.ripplegrowthrate = 0.2     -- per second
+
+    table.insert(self.ripples, ripple)
 end
 
 return duck

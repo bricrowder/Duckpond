@@ -17,6 +17,8 @@ function pond.new(pondfile)
     p.bank.x = 0
     p.bank.y = 0
 
+    p.ripples = {}
+
     p.canvas = love.graphics.newCanvas(800,600-p.bank.texture:getHeight())
     p.artefactcanvas = love.graphics.newCanvas(200,(600-p.bank.texture:getHeight())/2)
     p.artefactx = -800
@@ -31,6 +33,7 @@ function pond.new(pondfile)
         end
     end
 
+    -- make water reflection canvas
     love.graphics.setCanvas(p.artefactcanvas)
     for i = 1, 200 do
         for j = 1, 105 do
@@ -49,6 +52,7 @@ function pond.new(pondfile)
 
 
     p.timer = 0
+
 
 
     return p
@@ -79,8 +83,13 @@ function pond:draw(d)
     love.graphics.setColor(1,1,1,1)
 
     if d then
-        love.graphics.setColor(1,1,1,0.5)
         for i, v in ipairs(d) do
+            if #v.ripples > 0 then
+                v:drawRipples(self.bank.texture:getHeight())
+            end
+
+            love.graphics.setColor(1,1,1,0.5)
+
             if v.mode == "eat" then
                 love.graphics.draw(v.eat.texture[v.eat.frame], v.x, v.y-self.bank.texture:getHeight()+v.texture:getHeight(), 0, v.flip, -1, v.texture:getWidth()/2, v.texture:getHeight()/2)
             elseif v.mode == "clean" then
@@ -101,8 +110,8 @@ function pond:draw(d)
     love.graphics.setShader(self.watershader)
     love.graphics.draw(self.canvas, 0, self.bank.texture:getHeight())
     love.graphics.setShader()
-
 end
+
 
 
 return pond

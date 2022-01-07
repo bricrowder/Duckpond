@@ -39,6 +39,11 @@ function game:keypressed(key)
         -- pause menu / quit
         self.paused = not self.paused
     end
+    if key == "f" then
+        for i, v in ipairs(self.foodspawners) do
+            v.active = not(v.active)
+        end
+    end
 end
 
 function game:update(dt)
@@ -68,6 +73,8 @@ function game:draw()
         for i, v in ipairs(self.ducks) do
             v:draw()
             love.graphics.print(i, v.x, v.y)
+            love.graphics.print(#v.ripples, v.x, v.y+15)
+            love.graphics.print(v.angle, v.x, v.y+30)
         end
     else
         -- show pause menu
